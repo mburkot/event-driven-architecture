@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Order.Broker\Order.Broker.csproj" />
     <ProjectReference Include="..\Order.Data\Order.Data.csproj" />
   </ItemGroup>
 

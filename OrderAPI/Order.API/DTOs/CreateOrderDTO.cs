@@ -2,6 +2,8 @@
 {
     public class CreateOrderDTO
     {
+        public string OrderNumber { get; set; }
+
         public string Currency { get; set; }
 
         public ClientDTO Client { get; set; }

@@ -1,23 +1,35 @@
 ﻿using Order.API.DTOs;
 using Order.Data.Entities;
 using Order.Data.Interfaces;
+using Order.Broker.Interfaces;
+using Order.API.Events;
+using Order.Broker.Models;
 
 namespace Order.API.Services
 {
     public class OrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IBroker _broker;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(ILogger<OrderService> logger, IOrderRepository orderRepository)
+        public OrderService(ILogger<OrderService> logger, IOrderRepository orderRepository, IBroker broker)
         {
             _logger = logger;
             _orderRepository = orderRepository;
+            _broker = broker;
         }
 
         public async Task<bool> AddOrder(CreateOrderDTO dto)
         {
-            return await _orderRepository.InsertOrder(ConvertToOrderEntity(dto));
+            var response = await _orderRepository.InsertOrder(ConvertToOrderEntity(dto));
+
+            if(!response)
+                return false;
+
+            await PublishNewOrderEvent(dto);
+
+            return true;
         }
 
         public IEnumerable<OrderEntity> GetAllOrders()
@@ -25,10 +37,29 @@ namespace Order.API.Services
             return _orderRepository.GetAll();
         }
 
+        private async Task<bool> PublishNewOrderEvent(CreateOrderDTO dto)
+        {
+            NewOrderEvent newOrderEvent = new()
+            {
+                OrderNumber = dto.OrderNumber
+            };
+
+            EventProperties eventProperties = new()
+            {
+                Type = "order.new",
+                Source = "order.api.create.endpoint",
+                Subject = "order.new",
+                Id = Guid.NewGuid().ToString(),
+            };
+
+            return await _broker.Publish(newOrderEvent, eventProperties);
+        }
+
         private OrderEntity ConvertToOrderEntity(CreateOrderDTO dto)
         {
             var entity = new OrderEntity
             {
+                OrderNumber = dto.OrderNumber,
                 Currency = dto.Currency,
                 Client = new()
                 {
