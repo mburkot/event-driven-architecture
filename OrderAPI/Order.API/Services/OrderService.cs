@@ -1,5 +1,4 @@
-﻿using Order.API.Controllers;
-using Order.API.DTOs;
+﻿using Order.API.DTOs;
 using Order.Data.Entities;
 using Order.Data.Interfaces;
 
@@ -21,9 +20,9 @@ namespace Order.API.Services
             return await _orderRepository.InsertOrder(ConvertToOrderEntity(dto));
         }
 
-        public async Task<IEnumerable<OrderEntity>> GetAllOrders()
+        public IEnumerable<OrderEntity> GetAllOrders()
         {
-            return await _orderRepository.GetAll();
+            return _orderRepository.GetAll();
         }
 
         private OrderEntity ConvertToOrderEntity(CreateOrderDTO dto)

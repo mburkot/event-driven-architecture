@@ -2,7 +2,7 @@
 {
     public class OrderEntity
     {
-        public Guid Id { get; set; }
+        public string OrderNumber { get; set; }
 
         public string Currency { get; set; }
 

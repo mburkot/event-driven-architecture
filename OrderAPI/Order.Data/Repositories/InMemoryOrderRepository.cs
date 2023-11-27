@@ -17,9 +17,9 @@ namespace Order.Data.Repositories
             return Task.FromResult(true);
         }
 
-        public Task<IEnumerable<OrderEntity>> GetAll()
+        public IEnumerable<OrderEntity> GetAll()
         {
-            return Task.FromResult(_orders.AsEnumerable());
+            return _orders.AsEnumerable();
         }
     }
 }

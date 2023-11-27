@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.RegisterRepository();
+builder.Services.RegisterRepository(builder.Configuration);
 builder.Services.AddTransient<OrderService>();
 
 var app = builder.Build();

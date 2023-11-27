@@ -28,9 +28,9 @@ namespace Order.API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetAllOrders()
+        public ActionResult GetAllOrders()
         {
-            return Ok(await _orderService.GetAllOrders());
+            return Ok(_orderService.GetAllOrders());
         }
     }
 }
