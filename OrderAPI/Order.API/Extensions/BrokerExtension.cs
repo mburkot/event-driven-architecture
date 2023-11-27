@@ -7,8 +7,7 @@ namespace Order.API.Extensions
     {
         public static IServiceCollection RegisterBroker(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddSingleton<IBroker, MongoDBOrderRepository>(sp => new MongoDBOrderRepository(configuration.GetConnectionString("MongoDB"), sp.GetRequiredService<ILogger<MongoDBOrderRepository>>()));
-            services.AddSingleton<IBroker, InMemoryBroker>();
+            services.AddSingleton<IBroker, ServiceBusBroker>(sp => new ServiceBusBroker(configuration.GetConnectionString("ServiceBus"), sp.GetRequiredService<ILogger<ServiceBusBroker>>()));
             return services;
         }
     }

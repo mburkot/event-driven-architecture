@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Order.Broker.Models
 {
@@ -41,6 +42,11 @@ namespace Order.Broker.Models
                 DataContentType = "application/json",
                 Data = message
             };
+        }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }
