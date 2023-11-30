@@ -1,8 +1,7 @@
-package brokers
+package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
@@ -21,7 +20,7 @@ func GetClient() *azservicebus.Client {
 	return client
 }
 
-func GetMessage() {
+func GetMessage(c chan string) {
 	client := GetClient()
 
 	receiver, err := client.NewReceiverForSubscription("orders-events", "shipiment-service", nil)
@@ -30,18 +29,21 @@ func GetMessage() {
 	}
 	defer receiver.Close(context.TODO())
 
-	messages, err := receiver.ReceiveMessages(context.TODO(), 0, nil)
-	if err != nil {
-		panic(err)
-	}
+	for ok := true; ok; ok = true {
 
-	for _, message := range messages {
-		body := message.Body
-		fmt.Printf("%s\n", string(body))
-
-		err = receiver.CompleteMessage(context.TODO(), message, nil)
+		messages, err := receiver.ReceiveMessages(context.TODO(), 10, nil)
 		if err != nil {
 			panic(err)
+		}
+
+		for _, message := range messages {
+			body := message.Body
+			c <- string(body)
+
+			err = receiver.CompleteMessage(context.TODO(), message, nil)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }
