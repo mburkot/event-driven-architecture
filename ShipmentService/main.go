@@ -7,12 +7,12 @@ import (
 func main() {
 
 	fmt.Println("\nget messages:")
-	c := make(chan string)
+	c := make(chan Message)
 	go GetMessage(c)
 
 	for u := range c {
-		go func(body string) { // Function literal
-			fmt.Printf("%s\n", string(body))
+		go func(message Message) {
+			GetSalesOrderByNumber(message.Data.OrderNumber)
 		}(u)
 	}
 }
